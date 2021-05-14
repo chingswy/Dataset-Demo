@@ -2,7 +2,7 @@
  * @Date: 2021-04-07 10:27:04
  * @Author: Qing Shuai
  * @LastEditors: Qing Shuai
- * @LastEditTime: 2021-05-14 16:38:43
+ * @LastEditTime: 2021-05-14 21:21:33
  * @FilePath: /Dataset-Demo/mirror.html
 -->
 <!DOCTYPE html>
@@ -52,6 +52,11 @@
                     </div>
                     <div class="column">
                         <p class="mb-5">
+                            <p id="page-number" class="btn btn-large btn-light" style="margin-top:10px" role="button">1-5</p>
+                        </p>
+                    </div>
+                    <div class="column">
+                        <p class="mb-5">
                             <p class="btn btn-large btn-light" onclick="nextPage()" style="margin-top:10px" role="button">Next</p>
                         </p>
                     </div>
@@ -78,16 +83,38 @@
     <script>
         var MAX_VIDEOS_PAGE = 5;
         var seqs = ['6UUpPNtGRJI+002290+002970', '9IpWjz8pg6w+000660+001127', 'BHxrLHmhcLE+006690+007920', 'FOPBPo4Ncno+002540+003180', 'Vokp5gG9zeA+003090+003970'];
+        var infos = {
+            "funsport": ['Zxs1QNmjQ50+000050+000220', 'sLFVOvKX0a0+000109+000249', 'AVCtTdubVUc+000070+000190', '87EtqKMate8+000040+000150', 'l0oG4W2nRDk+000110+000170']
+        }
+        for(var key in infos){
+            infos[key].forEach(function (element, index, array){seqs.push(key+"/"+element)});
+        }
         var root = './mirror/'
         // 2、添加行tr，利用for循环（i的数量与数组的长度有关）
         // 获取元素
         var tbody = document.querySelector('tbody');
         var start = 0;
+
+        function get_url(seqname){
+            
+        }
+
+        function get_seqname(seqname){
+            var names = seqname.split("/");
+            if(names.length > 1){
+                seq = names[1].substring(0, 11)
+            }else{
+                seq = names[0].substring(0, 11)
+            }
+            return seq;
+        }
+
         function create_title(seqname){
             var link = document.createElement('a');
             link.class = "video-title"
-            link.innerHTML = seqname.substring(0, 11);
-            link.href = "https://www.youtube.com/watch?v=" + seqname.substring(0, 11);
+            seq = get_seqname(seqname);
+            link.innerHTML = seq;
+            link.href = "https://www.youtube.com/watch?v=" + seq;
             return link;
         }
         function reloadPage(){
@@ -97,15 +124,18 @@
             for (var i=start;i<start+MAX_VIDEOS_PAGE;i++) {
                 if(i>=seqs.length)break;
                 seqname = seqs[i];
-                titles[i-start].innerHTML = seqname.substring(0, 11);
-                titles[i-start].href = "https://www.youtube.com/watch?v=" + seqname.substring(0, 11);
+                seq = get_seqname(seqname);
+                titles[i-start].innerHTML = seq;
+                titles[i-start].href = "https://www.youtube.com/watch?v=" + seq;
                 inputs[i-start].src= root + 'videos/' + seqname + '.mp4';
                 inputs[i-start].parentNode.load();
-                inputs[i-start].parentNode.play();
                 smpls[i-start].src= root + 'smpl/' + seqname + '.mp4';
                 smpls[i-start].parentNode.load();
+                inputs[i-start].parentNode.play();
                 smpls[i-start].parentNode.play();
             }
+            var page = document.getElementById("page-number");
+            page.innerText = (start + 1) + '-' + (start + MAX_VIDEOS_PAGE);
         }
         function previousPage(){
             start = Math.max(start - MAX_VIDEOS_PAGE, 0);
