@@ -1,0 +1,145 @@
+<!--
+ * @Date: 2021-04-07 10:27:04
+ * @Author: Qing Shuai
+ * @LastEditors: Qing Shuai
+ * @LastEditTime: 2021-05-14 16:38:43
+ * @FilePath: /Dataset-Demo/mirror.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EasyMocap</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap-4.4.1.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+    <style>
+        table {
+            /* width: 710px; */
+            margin: 10px auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        
+        td,
+        th {
+            border: 1px solid #333;
+        }
+        
+        thead tr {
+            height: 40px;
+            background-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+                <h1 tag="single">Mirrored Human</h1>
+                <hr style="margin-top:0px">
+                <div class="row justify-content-center">
+                    <div class="column">
+                        <p class="mb-5">
+                            <p class="btn btn-large btn-light" onclick="previousPage()" style="margin-top:10px" role="button">
+                            Prev
+                            </p>
+                        </p>
+                    </div>
+                    <div class="column">
+                        <p class="mb-5">
+                            <p class="btn btn-large btn-light" onclick="nextPage()" style="margin-top:10px" role="button">Next</p>
+                        </p>
+                    </div>
+                </div>
+                <hr style="margin-top:-15px">
+                <table cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Link</th>
+                            <th>Video</th>
+                            <th>SMPL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                
+            </div>
+          </div>
+        </div>
+    </section>
+
+    
+    <script>
+        var MAX_VIDEOS_PAGE = 5;
+        var seqs = ['6UUpPNtGRJI+002290+002970', '9IpWjz8pg6w+000660+001127', 'BHxrLHmhcLE+006690+007920', 'FOPBPo4Ncno+002540+003180', 'Vokp5gG9zeA+003090+003970'];
+        var root = './mirror/'
+        // 2、添加行tr，利用for循环（i的数量与数组的长度有关）
+        // 获取元素
+        var tbody = document.querySelector('tbody');
+        var start = 0;
+        function create_title(seqname){
+            var link = document.createElement('a');
+            link.class = "video-title"
+            link.innerHTML = seqname.substring(0, 11);
+            link.href = "https://www.youtube.com/watch?v=" + seqname.substring(0, 11);
+            return link;
+        }
+        function reloadPage(){
+            var titles = document.getElementsByTagName("a");
+            var inputs = document.getElementsByClassName("video-input");
+            var smpls = document.getElementsByClassName("video-smpl");
+            for (var i=start;i<start+MAX_VIDEOS_PAGE;i++) {
+                if(i>=seqs.length)break;
+                seqname = seqs[i];
+                titles[i-start].innerHTML = seqname.substring(0, 11);
+                titles[i-start].href = "https://www.youtube.com/watch?v=" + seqname.substring(0, 11);
+                inputs[i-start].src= root + 'videos/' + seqname + '.mp4';
+                inputs[i-start].parentNode.load();
+                inputs[i-start].parentNode.play();
+                smpls[i-start].src= root + 'smpl/' + seqname + '.mp4';
+                smpls[i-start].parentNode.load();
+                smpls[i-start].parentNode.play();
+            }
+        }
+        function previousPage(){
+            start = Math.max(start - MAX_VIDEOS_PAGE, 0);
+            reloadPage();
+        }
+        function nextPage(){
+            start = Math.min(start + MAX_VIDEOS_PAGE, seqs.length);
+            reloadPage();
+        }
+
+        for (var i=start;i<start+MAX_VIDEOS_PAGE;i++) {
+            //创建行tr
+            var tr = document.createElement('tr');
+            //将新创建的行tr添加给tbody
+            tbody.appendChild(tr);
+            // 3、内层for循环，创建每一行中的所有单元格td，单元格td的数量与对象中的属性多少有关，故用for...in...
+            var td0 = document.createElement('td');
+            td0.width = 100;
+            var link = create_title(seqs[i]);
+            td0.appendChild(link);
+            tr.appendChild(td0);
+
+            var td1 = document.createElement('td');
+            td1.width = 310;
+            td1.innerHTML = '<video width="300" playsinline="" autoplay="autoplay" loop="loop" preload="" muted=""><source src="' + root + 'videos/' + seqs[i] + '.mp4" type="video/mp4"' + ' class="video-input"' + '></video>';
+            tr.appendChild(td1);
+
+            var td2 = document.createElement('td');
+            td2.class = "video-smpl"
+            td2.width = 310;
+            td2.innerHTML = '<video width="300" playsinline="" autoplay="autoplay" loop="loop" preload="" muted=""><source src="' + root + 'smpl/' + seqs[i] + '.mp4" type="video/mp4"' + ' class="video-smpl"' + '></video>';
+            tr.appendChild(td2);
+        }
+    </script>
+</body>
+
+</html>
