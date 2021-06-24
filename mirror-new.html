@@ -1,0 +1,151 @@
+<!--
+ * @Date: 2021-04-07 10:27:04
+ * @Author: Qing Shuai
+ * @LastEditors: Qing Shuai
+ * @LastEditTime: 2021-06-24 22:04:45
+ * @FilePath: /Dataset-Demo/mirror-new.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EasyMocap</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap-4.4.1.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+    <style>
+        table {
+            /* width: 710px; */
+            margin: 10px auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        
+        td,
+        th {
+            border: 1px solid #333;
+        }
+        
+        thead tr {
+            height: 40px;
+            background-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+                <h1 tag="single">Mirrored Human</h1>
+                <hr style="margin-top:0px">
+                <div class="row justify-content-center">
+                    <div class="column">
+                        <p class="mb-5">
+                            <p class="btn btn-large btn-light" onclick="previousPage()" style="margin-top:10px" role="button">
+                            Prev
+                            </p>
+                        </p>
+                    </div>
+                    <div class="column">
+                        <p class="mb-5">
+                            <p id="page-number" class="btn btn-large btn-light" style="margin-top:10px" role="button">1</p>
+                        </p>
+                    </div>
+                    <div class="column">
+                        <p class="mb-5">
+                            <p class="btn btn-large btn-light" onclick="nextPage()" style="margin-top:10px" role="button">Next</p>
+                        </p>
+                    </div>
+                </div>
+                <hr style="margin-top:-15px">
+                
+                <table cellspacing="0">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                
+            </div>
+          </div>
+        </div>
+    </section>
+
+    
+    <script>
+        var MAX_ROWS = 4;
+        var MAX_COLS = 4;
+        var MAX_VIDEOS_PAGE = MAX_ROWS * MAX_COLS;
+        var seqs = ['DeoC3ZNN79E+000020+000090.mp4',  'r_CRMeOqQtA+000070+000122.mp4', 'AVCtTdubVUc+000070+000190.mp4', 'kvNTiBSffaI+000110+000190.mp4', 'l0oG4W2nRDk+000110+000170.mp4', 'Zxs1QNmjQ50+000050+000220.mp4', 'BtrTAQkdYMs+000040+000100.mp4', '87EtqKMate8+000040+000150.mp4', '_zo9fbuqI9w+000040+000130.mp4', 'sLFVOvKX0a0+000109+000249.mp4', 'EzIYrAotSeQ+000040+000080.mp4', 'vRYf25I6uYo+000060+000100.mp4', '9IpWjz8pg6w+000660+001127.mp4', '0junSQuSJh4+013000+013970.mp4', '4_oQ8YTWg-I+000170+001910.mp4', 'cxjV5uFQ1E8+000000+001580.mp4', 'cYnGzlbqics+001300+001570.mp4', '9sJtld8Ig8Q+000240+002060.mp4', '2P2nIhNTZgU+001513+002233.mp4', 'EfuexXsdqmY+000000+001250.mp4', 'bSZtOc-sjSs+012180+013280.mp4', 'B3Q1PbYdiDc+000790+001530.mp4', 'iElFpFzlSwE+008170+009070.mp4', 'gRaNn2azYYk+000740+002290.mp4', 'M2Y6CDnKnWw+004550+005660.mp4', 'C4hx7Sb_RN0+001030+001450.mp4', 'r51-3izUKG0+000100+000920.mp4', 'kqAvo_dQ-_0+002350+003102.mp4', '1WJtsn8MvAY+000090+002287.mp4', '8QfzSXJrdGc+010290+011240.mp4', 'onW3bjuR1z0+000033+000863.mp4', 'SrclajF1Ucs+036150+038150.mp4', 'gm1YgI0UXsk+002350+003170.mp4', 'ilItUNfCmQs+012340+013230.mp4', 'XB-SAiswJRk+018264+019324.mp4', 'xMhvz3QuObM+000040+000730.mp4', '8xFhcUChyTE+011800+013040.mp4', 'c5CSX4f0boA+002080+002610.mp4', 'ezgoIwfz-m8+007360+008370.mp4', '6UUpPNtGRJI+002290+002970.mp4', '1-9KMA4OZSk+012450+013070.mp4', 'G1ttpB05_UY+003133+003754.mp4', 'X2X5zUfge5c+000100+001670.mp4', '8QtfqQb6Pt8+010050+012920.mp4', 'mFCWW13CfqI+001120+001950.mp4', 'IXZjtfckhPg+004900+005881.mp4', 'lpkbFWo8GD0+002640+003390.mp4', '8Nlf5p1fnos+010202+011732.mp4', 'CE8tDfMbA7M+010040+010830.mp4', 'BHxrLHmhcLE+006690+007920.mp4', 'kHQhB8POuYc+000090+000771.mp4', 'IG2VQJYXplM+012790+013930.mp4', 'kC4I9MOxjfQ+000740+001340.mp4', 'hVDPS-f6K5o+002880+003470.mp4', 'xwgefd1_csA+000070+001440.mp4'];
+        var root = './mirror-all/'
+        // 2、添加行tr，利用for循环（i的数量与数组的长度有关）
+        // 获取元素
+        var tbody = document.querySelector('tbody');
+        var start = 0;
+
+        function get_seqname(seqname){
+            var names = seqname.split("/");
+            if(names.length > 1){
+                seq = names[1].substring(0, 11)
+            }else{
+                seq = names[0].substring(0, 11)
+            }
+            return seq;
+        }
+
+        function create_title(seqname){
+            var link = document.createElement('a');
+            link.class = "video-title"
+            seq = get_seqname(seqname);
+            link.innerHTML = seq;
+            link.href = "https://www.youtube.com/watch?v=" + seq;
+            return link;
+        }
+
+        function reloadPage(){
+            var inputs = document.getElementsByClassName("video-output");
+            for(var r=0;r<MAX_ROWS;r++){
+                for(var c=0;c<MAX_COLS;c++){
+                    var i = r*MAX_COLS + c + start;
+                    if(i>=seqs.length)continue;
+                    var td = inputs[r*MAX_COLS+c];
+                    // td.parentNode.parentNode.href = "https://www.youtube.com/watch?v=" + get_seqname(seqs[i]);
+                    td.src= root + seqs[i];
+                    td.parentNode.load();
+                    td.parentNode.play();
+                }
+            }
+            var page = document.getElementById("page-number");
+            page.innerText = 1 + start/MAX_VIDEOS_PAGE;
+        }
+
+        function previousPage(){
+            if(start==0)return;
+            start = Math.max(start - MAX_VIDEOS_PAGE, 0);
+            reloadPage();
+        }
+        function nextPage(){
+            if(start+MAX_VIDEOS_PAGE>=seqs.length)return;
+            start = Math.min(start + MAX_VIDEOS_PAGE, seqs.length);
+            reloadPage();
+        }
+
+        for(var r=0;r<MAX_ROWS;r++){
+            var tr = document.createElement('tr');
+            tbody.appendChild(tr);
+            for(var c=0;c<MAX_COLS;c++){
+                var i = r*MAX_COLS + c + start;
+                var td = document.createElement('td');
+                td.width = 300;
+                td.innerHTML = '<video width="300" playsinline="" autoplay="autoplay" loop="loop" preload="" muted=""><source src="' + root + seqs[i] + '" type="video/mp4"' + ' class="video-output"' + '></video>';
+                tr.appendChild(td);
+            }
+        }
+    </script>
+</body>
+
+</html>
